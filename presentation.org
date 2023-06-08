@@ -1,0 +1,436 @@
+#+TITLE:Feature integration with critical dynamics numerical studies and mathematical analysis
+#+AUTHOR: Maik Schünemann
+#+email: maikschuenemann@gmail.com
+#+DESCRIPTION: 
+#+KEYWORDS: 
+#+LANGUAGE:  de
+#+OPTIONS:   H:3 num:t toc:t :nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc tasks:nil
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   
+#+LINK_HOME:
+#+TAGS:  BlowerDoor(b) Suub(s) Uni(u) Home(h) Task(t) Note(n) Info(i) noexport(e)
+#+TAGS: Changed(c) Project(p) Reading(r) Hobby(f) OpenSource(o) Meta(m)
+#+SEQ_TODO: TODO(t) STARTED(s) WAITING(w) APPT(a) NEXT(n) | DONE(d) CANCELLED(c) DEFERRED(f) 
+#+STARTUP:showall
+#+LaTeX_CLASS: beamer
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usetikzlibrary{shapes,backgrounds}
+#+LATEX_HEADER: \usepackage{natbib}
+#+LATEX_HEADER: \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+#+LATEX_HEADER: \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+#+latex_header: \usetheme{Goettingen}
+#+latex_header: \usecolortheme{rose}
+#+latex_header: \AtBeginSection[]{
+#+latex_header:   \begin{frame}
+#+latex_header:   \vfill
+#+latex_header:   \centering
+#+latex_header:   \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+#+latex_header:     \usebeamerfont{title}\secname\par%
+#+latex_header:   \end{beamercolorbox}
+#+latex_header:   \vfill
+#+latex_header:   \end{frame}
+#+latex_header: }
+#+LATEX_HEADER: \makeatletter
+#+LATEX_HEADER: \setbeamertemplate{sidebar \beamer@sidebarside}%{sidebar theme}
+#+LATEX_HEADER: {
+#+LATEX_HEADER:   \beamer@tempdim=\beamer@sidebarwidth%
+#+LATEX_HEADER:   \advance\beamer@tempdim by -6pt%
+#+LATEX_HEADER:   \insertverticalnavigation{\beamer@sidebarwidth}%
+#+LATEX_HEADER:   \vfill
+#+LATEX_HEADER:   \ifx\beamer@sidebarside\beamer@lefttext%
+#+LATEX_HEADER:   \else%
+#+LATEX_HEADER:     \usebeamercolor{normal text}%
+#+LATEX_HEADER:     \llap{\usebeamertemplate***{navigation symbols}\hskip0.1cm}%
+#+LATEX_HEADER:     \vskip2pt%
+#+LATEX_HEADER:   \fi%
+#+LATEX_HEADER: }%
+#+latex_header: \addtobeamertemplate{block begin}{
+#+latex_header: 		\setlength\abovedisplayskip{-2.5ex plus1ex minus1ex}
+#+latex_header: 		\setlength\abovedisplayshortskip{-2.5ex plus1ex minus1ex}
+#+latex_header: 		\setlength\belowdisplayskip{0ex plus1ex minus1ex}
+#+latex_header: 		\setlength\belowdisplayshortskip{0ex plus1ex minus1ex}
+#+latex_header: 	}
+#+LATEX_HEADER: \makeatother
+
+* Introduction 
+** Motivation
+*** Motivation
+    #+ATTR_LATEX: :overlay +-
+    -  perceptual grouping/feature integration requires sophisticated
+      computational capabilities of the brain
+    - maximal computational power of dynamical system attained at phase transition between
+      chaos and order
+      - criticality experimentally observed in neural systems
+    - *link feature integration and critical dynamics*
+    - distributed local elemenents belonging to a perceptual /figure/
+      display critical dynamics while activity in network of randomly
+      chosen elements stays subcritical
+*** Illustration
+    #+ATTR_LATEX: :width \framewidth
+    [[/home/kima/Dropbox/uni/master/images/coral_draws/2afc-stimulus.pdf]]
+** EHE model    
+*** Eurich-Herrmann-Ernst model
+    - Network of non-leaky integrators \(u_i\in [0,1)\) coupled by weight matrix \(W\)
+    - Infinite separation of timescales between external and internal activation
+    - \(w_{ij} \) internal activation given to unit \(u_{i}\) from unit \(u_j \)
+
+    #+ATTR_LATEX: :width  0.751 \textwidth
+    [[/home/kima/Dropbox/uni/master/matlab_fede/ehe_illustraton_annotated.png]]
+    # \begin{align*}
+    # \label{eq:ehe-dynamics}
+    # \tilde{u}_i(t+1) &= u_i(t) + I_i^{\text{ext}}(t) + I_i^{\text{int}}(t)\\
+    # u_i(t+1) &= 
+    # \begin{cases}
+    #   \tilde{u}_i(t+1) \mbox{ if } \tilde{u}_i(t + 1) < 1 \\
+    #   \tilde{u}_i(t+1) - 1 \mbox{ otherwise.}
+    # \end{cases}\\
+    #  A_i(t) &= \delta[\tilde{u}_i(t) > 1]\\
+    #  I^{\text{int}}(t) &= W A(t-1)\\
+    #  I_i^{\text{ext}}(t) &= \delta \left [r(t) = i \wedge |A(t)|_1 = 0\right ] \Delta U \\
+    #  r(t) &\sim \text{UNI}(\{1,\ldots,N\})
+    # \end{align*}
+
+*** Eurich-Herrmann-Ernst model  citep:eurich2002finite            :noexport:
+    - Network of nonleaky integrators \(u_i\in [0,1)\) coupled by weight matrix \(W\)
+    - Infinite separation of timescales between external and internal activation
+    - \(w_{ij} \) internal activation given to unit i from unit j
+    # \begin{align*}
+    # \label{eq:ehe-dynamics}
+    # \tilde{u}_i(t+1) &= u_i(t) + I_i^{\text{ext}}(t) + I_i^{\text{int}}(t)\\
+    # u_i(t+1) &= 
+    # \begin{cases}
+    #   \tilde{u}_i(t+1) \mbox{ if } \tilde{u}_i(t + 1) < 1 \\
+    #   \tilde{u}_i(t+1) - 1 \mbox{ otherwise.}
+    # \end{cases}\\
+    #  A_i(t) &= \delta[\tilde{u}_i(t) > 1]\\
+    #  I^{\text{int}}(t) &= W A(t-1)\\
+    #  I_i^{\text{ext}}(t) &= \delta \left [r(t) = i \wedge |A(t)|_1 = 0\right ] \Delta U \\
+    #  r(t) &\sim \text{UNI}(\{1,\ldots,N\})
+    # \end{align*}
+ 
+*** Homogeneous EHE Model                                          :noexport:
+    - EHE model with constant \(W = (\alpha)_{i=1,\ldots,N,j=1,\ldots,N}\) citep:eurich2002finite
+    - shows phase transition from subcritical to supercritical regime in dependence on \(\alpha \)
+    - avalanche size distribution analytically known
+    - Critical coupling weight 
+      \[\alpha_{\text{crit}}(N) = \frac{1- \frac{1}{\sqrt{N}}}{N}\]
+*** Dynamical regimes of homogeneous EHE model
+        #+ATTR_LATEX: width:300px
+     #+CAPTION: \label{fig:ehe} Probability distributions of avalanche sizes, \(P(x, N, \alpha)\), and avalanche 
+     #+CAPTION: durations, \(p_{d}(x, N, \alpha)\) , in the subcritical (a; \(\alpha\) = 0.8), critical (b; \(\alpha\) = 0.99), supra-critical (c; \(\alpha\) = 0.999), and multi-peaked (d; \(\alpha\) = 0.99997) regime. (a-c) Solid lines and symbols denote the analytical and the numerical results for the avalanche size distributions, respectively. In (d), the solid line shows the numerically calculated avalanche size distribution. The dashed lines in (a-d) show the numerically evaluated avalanche duration distributions. In all cases, the presented curves are temporal averages over 107 avalanches with N = 10000, and \(\Delta U\) = 0.022. Figure and caption taken from cite:eurich2002finite.
+     [[/home/kima/Dropbox/uni/master//images/20171125_210542_2721P0p.png]]
+
+* Simulation study: Feature integration with critical subnetworks
+
+** Embedding critical subnetworks
+*** Weight matrix construction
+**** Task
+     Embed \(N_e \) figure subnetworks of size \(N_s \) in a network of
+     \(N_u \) units such that the subnetworks display critical
+     dynamics when activated but randomly chosen units stay subcritical.
+
+**** Algorithm
+    :PROPERTIES:
+    :BEAMER_act: <2->
+    :END:
+     - Initialize the weight matrix \(W\) of size \(N_u\times N_u\) with values \(-\beta \alpha_{\text{crit}}(N_s)\)
+     - Repeat \(N_e\) times:
+       - Uniformely choose \(N_s\) elements from the set \(\{1,\ldots,N_u \}\) without replacement and assign it to \(I\) 
+     - Set the submatrix formed by the rows and columns in \(I\) to \(W_{I} = \alpha_{\text{crit}}(N_s)\).
+*** Weight matrix illustration
+
+   #+ATTR_LATEX: :width \textwidth
+   [[/home/kima/Dropbox/uni/master/images/coral_draws/weight-matrices-illustration.pdf]]
+
+    
+*** Result: Transition to supercriticality
+    \begin{scriptsize}
+    \begin{align*}
+   P[\text{two units are not connected}]  = \frac{N_u-1}{N_u} \left (1-\frac{N_s-1}{N_u-1} \right )^{\frac{N_sN_e}{N_u}}
+   \end{align*}
+   \end{scriptsize}
+    #+ATTR_LATEX: :width 0.9 \framewidth
+    [[/home/kima/Dropbox/uni/master/images/phase_spaces_big.png]]
+   
+
+** Avalanche separability
+*** Analyzing avalanche separability in a 2-AFC task
+    #+ATTR_LATEX: :overlay +-
+    - In order to be useful for feature integration, the model should fulfill the following:
+      - activity in activated figure subnetworks is critical
+      - activity for activated networks of randomly chosen elements stays subcritical
+      - neural readout mechanism can distinguish between figure vs
+        random activation in short time - in order to be contrast
+        invariant this should not rely on differences in total firing rates 
+    - We test this by simulating a 2-alternative forced choice (2-AFC) task,
+      which is a standard paradigm for example in behavioral contour
+      integration experiments
+*** 2-AFC task illustration    
+    #+ATTR_LATEX: :width \framewidth
+    [[/home/kima/Dropbox/uni/master/images/coral_draws/2AFC-illustration.pdf]]
+*** Result: Avalanche separability
+    #+ATTR_LATEX: :width \framewidth
+    [[/home/kima/Downloads/avs-sep.pdf]]
+*** Coincidence detector
+**** Coincidence detector description 
+     given an allowed observation time \(T\) and internal threshold
+     \(s_0 \) large avalanche sizes, classify the stimulus with more
+     large avalanches as target
+**** Coincidence detector illustration
+     \(N_{s}=100,N_e = 50,K=100,\beta=2,s_0 = 30,T=1000\)
+    #+ATTR_LATEX: :width 0.7\linewidth
+   [[/home/kima/Dropbox/uni/master/images/coral_draws/threshold_illustration.pdf]]
+
+*** Result: Coincidence detector performance
+    #+ATTR_LATEX: :width \framewidth
+    [[/home/kima/Dropbox/uni/master/images/coral_draws/2afc-performance.pdf]]
+*** Summary and outlook
+    #+ATTR_LATEX: :overlay +-
+    - algorithm to embed high number of randomly chosen figure subnetworks 
+    - avalanche size statistic clearly separable between target and
+      distractor activation and can be read out with a coincidence detector
+    - results obtained over a large range of parameters and are robust
+      to changes in \(K,\beta\)
+    - Conclusion: criticality in figure networks can be used for feature integration
+    - Outlook:
+      - more realistic neuron model (leaks, resting potential,...)
+      - partial occlusion, multiple activated figure networks (of different sizes),...
+      - explanation of phase transition to supercriticality  
+* Mathematical analysis of the EHE model 
+** Skew product formulation
+*** Formulation as a skew product dynamical system
+    #+ATTR_LATEX: :overlay +-
+    - analytical treatment generalized to the conditions
+      \[W \geq 0,W\sum_{i=1}^Ne_i+ \Delta U < 1,1 - 2W\sum_{i=1}^Ne_i \geq 0 \]
+    - skew product formulation models stochastic external drive as
+      shift on infinite dimensional space of sequences over the alphabet \(\{1,\ldots,\mathcal{N}\}\).
+    - H models one step on slow timescale and consists of handling the
+      external input \(E_{a_1} \) followed by \(F\), which models one
+      step on the fast timescale, applied \(k(a_1,u)\) times until no
+      units fire anymore.
+      \begin{align*}
+      T: \Sigma_{\mathcal{N}}^+ &\times [0,1)^{N} \rightarrow \Sigma^+_{\mathcal{N}} \times [0,1)^N \nonumber \\
+      T(a,u) &= (\sigma(a),H(a,u))\\
+      H(a,u) &=  F^{k(a_1,u)} \circ E_{a_1}(u)\\
+      \end{align*}
+** Noninhabited region
+*** Noninhabited region 
+    - Region which has no preimage under \(H\)
+    - Intuition: \(u_i \geq \sum_{j\in I}w_{ij}\) after an avalanche
+      started by \(u_i\) in which units \(u_i \in I \subseteq \mathcal{N} \)
+      fire.
+
+    #+ATTR_LATEX: :width  0.95 \textwidth
+    [[/home/kima/Dropbox/uni/master/matlab_fede/ehe_illustraton_annotated.png]]
+
+      
+*** 2d noninhabited region
+   \begin{scriptsize}
+    \begin{align*}
+      &\Lambda(W,H) = \bigcup_{\emptyset \neq I \subseteq H} \Gamma(W, I)  &\Gamma(W,I)  = \left[0, \sum_{j \in I}w_{i j} \right )_{i \in I} 
+      \end{align*}
+      \end{scriptsize}
+    #+ATTR_LATEX: :width 0.7 \textwidth
+   [[/home/kima/Dropbox/uni/master/images/gammas2.pdf]]  
+ 
+*** 3D noninhabited region
+    \begin{scriptsize}
+    \begin{align*}
+      &\Lambda(W,H) = \bigcup_{\emptyset \neq I \subseteq H} \Gamma(W, I)  &\Gamma(W,I)  = \left[0, \sum_{j \in I}w_{i j} \right )_{i \in I} 
+      \end{align*}
+      \end{scriptsize}
+
+    #+ATTR_LATEX: :width 0.75 \textwidth
+    [[/home/kima/Dropbox/uni/master/images/Gammas.pdf]]
+
+*** Recursive decomposition
+    \begin{scriptsize}
+      \begin{align*}
+      &\Lambda(W,H)\cap [0,U_i)_{i\in H} = \biguplus_{\emptyset \neq I \subseteq H} \Lambda\left (W,I\right) \cap \left [0,\sum_{j\in H}w_{ij}\right)_{i\in H} \cap \left [\sum_{l\in H} w_{k l}, U_k \right)_{k \in H\setminus I}\\
+&\mathcal{V}(\Lambda(W,H) \cap [0,U_i)_{i\in H}) = \sum_{\emptyset
+    \neq I \subseteq H}(-1)^{|I|+1}|W_{I}|\prod_{j \in
+    H\setminus I}U_j  
+      \end{align*}
+      \end{scriptsize}
+
+    #+ATTR_LATEX: :width 0.75 \textwidth
+    [[/home/kima/Downloads/Rs_notext.pdf]]
+
+*** Recursive decomposition and volume                             :noexport:
+    \begin{scriptsize}
+      \begin{align*}
+      \Lambda(W,H)\cap [0,U_i)_{i\in H} = \biguplus_{\emptyset \neq I \subseteq H} \Lambda\left (W,I\right) \cap \left [0,\sum_{j\in H}w_{ij}\right)_{i\in H} \cap \left [\sum_{l\in H} w_{k l}, U_k \right)_{k \in H\setminus I} 
+      \end{align*}
+      \end{scriptsize}
+    - \(\Lambda(W,H)\) can be written as a disjoint union of all lower dimensional \(\Lambda(W,I)\),
+      \(\emptyset \neq I \subseteq H\).
+    - The volume is given by an alternating sum over all subdeterminants
+    \begin{align*}\mathcal{V}(\Lambda(W,H) \cap [0,U_i)_{i\in H}) = \sum_{\emptyset
+    \neq I \subseteq H}(-1)^{|I|+1}|W_{I}|\prod_{j \in
+    H\setminus I}U_j \label{eq:determinant-formula} \text{}\end{align*}
+
+** Probability distribution of avalanches
+*** Regions leading to avalanches
+    \begin{scriptsize}
+ \begin{align*}
+R(W,\operatorname{av}) &= [1 - \Delta U,1)_{\{a_1\}}\bigcap_{j=2}^D [1 - \operatorname{act}(\operatorname{av},k,j),1-\operatorname{act}(\operatorname{av},k,j-1))_{k \in G_j} \nonumber \\
+    &\cap \left ([0,1-\operatorname{act}(\operatorname{av},l,D)]_{l\in \mathcal{N}\setminus \mathcal{U}(\operatorname{av})} \setminus \Lambda(W,\mathcal{N}\setminus \mathcal{U}(\operatorname{av})) \right)
+    \end{align*}
+    \end{scriptsize}
+    #+ATTR_LATEX: :width 0.75 \framewidth
+    [[/home/kima/Dropbox/uni/master/matlab_fede/ehe_illustraton_annotated.png]]
+    
+*** Regions leading to avalanches
+    \begin{scriptsize}
+ \begin{align*}
+R(W,\operatorname{av}) &= [1 - \Delta U,1)_{\{a_1\}}\bigcap_{j=2}^D [1 - \operatorname{act}(\operatorname{av},k,j),1-\operatorname{act}(\operatorname{av},k,j-1))_{k \in G_j} \nonumber \\
+    &\cap \left ([0,1-\operatorname{act}(\operatorname{av},l,D)]_{l\in \mathcal{N}\setminus \mathcal{U}(\operatorname{av})} \setminus \Lambda(W,\mathcal{N}\setminus \mathcal{U}(\operatorname{av})) \right)
+    \end{align*}
+    \end{scriptsize}
+    #+ATTR_LATEX: :width 0.75 \framewidth
+    [[/home/kima/Dropbox/uni/master/images/Rav.pdf]]
+    
+*** Regions leading to avalanches                                  :noexport:
+
+    \begin{scriptsize}
+    \begin{align}
+   \label{eq:def-omega}
+   \Omega := \left \{(G_i)_{i=1\ldots D} \bigg | \emptyset \neq G_i \subseteq 
+   \mathcal{N} \forall i \in \{1\ldots D\},\biguplus_{i=1}^DG_i
+    \subseteq \mathcal{N},|G_1| \leq 1, D \geq 0 \right \}
+   \end{align}
+
+    
+      \begin{align*}
+R(W,\operatorname{av}) &= [1 - \Delta U,1)_{\{a_1\}}\bigcap_{j=2}^D [1 - \operatorname{act}(\operatorname{av},k,j),1-\operatorname{act}(\operatorname{av},k,j-1))_{k \in G_j} \nonumber \\
+    &\cap \left ([0,1-\operatorname{act}(\operatorname{av},l,D)]_{l\in \mathcal{N}\setminus \mathcal{U}(\operatorname{av})} \setminus \Lambda(W,\mathcal{N}\setminus \mathcal{U}(\operatorname{av})) \right)\label{eq:def-R-av} \text{ .}
+    \end{align*}
+    \end{scriptsize}
+
+    - under assumption of ergodicity the volumes of these regions
+      specify the probability space of all possible avalanches
+
+** EHE model as a random walk on the torus
+*** EHE model as a random walk on the torus
+     - \(H(a_1,u) = u + e_{a_1}\Delta U \) with respect to the quotient
+      topology generated by
+      \begin{scriptsize}
+      \begin{align*}
+      a &\sim_{W} b \iff  a-b =  \sum_{i=1}^NS_i z_i \text{, \(z_i \in \mathbb{Z}\)}, S_i = \left (\delta[i=j] - w_{ji} \right )_{j\in \mathcal{N}} 
+      \end{align*}
+      \end{scriptsize}
+    
+    #+ATTR_LATEX: :width 0.9 \framewidth
+    [[/home/kima/Dropbox/uni/master/images/surf_nontransformed.png]]
+
+*** EHE model as a random walk on the torus                        :noexport:
+    - \(H(a_1,u) = u + e_{a_1}\delta U \) with respect to the quotient
+      topology generated by
+      \begin{align*}
+      a &\sim_{W} b \text{ if and only if }  a-b =  \sum_{i=1}^NS_i z_i \text{, \(z_i \in \mathbb{Z}\)} , S_i = \left (\delta[i=j] - w_{ji} \right )_{j\in \mathcal{N}} \text{ .}
+      \end{align*}
+
+    - Since \(S = I - W\) is invertible (Neumann series), this
+      quotient space is homeomorphic to the N-torus
+
+*** EHE model as a random walk on the torus
+    - Since \(S = \operatorname{Id} - W\) is invertible (Neumann series), this
+      quotient space is homeomorphic to the N-torus
+
+    #+ATTR_LATEX: :width \framewidth
+    [[/home/kima/Dropbox/uni/master/images/surf_torus_better.png]]
+
+*** Summary and outlook
+    #+ATTR_LATEX: :overlay +-
+    - analytical treatment extended from the homogeneous case to a
+      wide class of coupling matrices \(W \)
+    - derived probability space of avalanches under ergodicity
+      assumption (proven for homogeneous case)
+    - simplified the model to a random walk on the torus
+    - Outlook:
+      - probability space hard to compute for large \(N\), closed form expressions for
+        avalanche sizes are needed
+      - can leaks be introduced into the model?
+      - prove/disprove ergodicity for the general case
+      - application to structured networks
+
+nocite:23358
+nocite:wertheimer1923untersuchungen
+nocite:wagemans2012century
+nocite:packard1988adaptation
+nocite:realtimecomputationedgeofchaos
+nocite:shew2013functional
+nocite:bak1987self
+nocite:beggs2003neuronal
+nocite:petermann2009spontaneous
+nocite:bedard2006does
+nocite:priesemann2014spike
+nocite:hahn2017spontaneous
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:levina2008mathematical
+nocite:eurich2002finite
+nocite:levina2008mathematical
+nocite:eurich2002finite
+nocite:lashley1951examination
+nocite:wagemans2012century
+nocite:levina2008mathematical
+nocite:levina2008mathematical
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:levina2008mathematical
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:cover2006elements
+nocite:levina2008mathematical
+nocite:PhysRevA
+nocite:levina2008mathematical
+nocite:deluca2013fitting
+nocite:corral2012practical
+nocite:corral2012practical
+nocite:clauset2009power
+nocite:deluca2013fitting
+nocite:eurich2002finite
+nocite:clauset2009power
+nocite:deluca2013fitting
+nocite:corral2012practical
+nocite:vanrullen2001feed
+nocite:eurich2002finite
+nocite:levina2008mathematical
+nocite:eurich2002finite
+nocite:levina2008mathematical
+nocite:eurich2002finite
+nocite:levina2008mathematical
+nocite:petersen2008matrix
+nocite:levina2008mathematical
+nocite:levina2008mathematical
+nocite:levina2008mathematical
+nocite:einsiedler2013dynamische
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:eurich2002finite
+nocite:shew2009neuronal
+nocite:deluca2013fitting
+nocite:deluca2013fitting
+nocite:deluca2013fitting
+* References                                                         :ignore:
+\begin{scriptsize}
+\begin{frame}[allowframebreaks]
+   \frametitle{References}
+   \bibliographystyle{plain}
+   \bibliography{/home/kima/Dropbox/emacs/bibliography/references}
+\end{frame}
+\end{scriptsize}
+
+
